@@ -46,9 +46,9 @@ ionex
 - `IONEXMapError`, ошибки при обработке карты.
 
 
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 `class ionex.IonexMap`
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Класс карты IONEX, содержит карту значений ПЭС и мета-данные.
 
@@ -57,11 +57,11 @@ ionex
 
 - `grid`: `namedtuple`, определение сетки для карты, содержит два `namedtupla`:
 
-    - `grid.latittude` = `namedtuple('Latitude', ['lat1', 'lat2', 'dlat'])`
-      определение сетки по широте от `lat1` до `lat2` с шагом `dlat`;
+  - `grid.latittude` = `namedtuple('Latitude', ['lat1', 'lat2', 'dlat'])`
+    определение сетки по широте от `lat1` до `lat2` с шагом `dlat`;
 
-    - `grid.longitude` = `namedtuple('Longitude', ['lon1', 'lon2', 'dlon'])`
-      определение сетки по долготе от `lon1` до `lon2` с шагом `dlon`.
+  - `grid.longitude` = `namedtuple('Longitude', ['lon1', 'lon2', 'dlon'])`
+    определение сетки по долготе от `lon1` до `lon2` с шагом `dlon`.
 
 - `tec`: `list`, данные ПЭС; одномерный список, представляет собой
   набор широтных "срезов" со значениями ПЭС.
