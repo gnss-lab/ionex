@@ -2,8 +2,8 @@ import warnings
 from collections import namedtuple
 from datetime import datetime, timedelta
 
-from .ionex_map import IonexMap
 from .exceptions import IONEXUnexpectedEnd
+from .ionex_map import IonexMap
 
 Grid = namedtuple('Grid', ['latitude', 'longitude', 'height'])
 Latitude = namedtuple('Latitude', ['lat1', 'lat2', 'dlat'])
@@ -148,7 +148,11 @@ class IonexV1:
 
     @staticmethod
     def _read_slice(line):
-        return [int(v) for v in line.split()]
+        # 5 -- "ширина" поля со значением ПЭС,
+        # поэтому длинна строки должна быть кратна 5
+        line = line.rstrip()
+        assert not len(line) % 5
+        return [int(line[i:i+5]) for i in range(0, len(line), 5)]
 
     def _read_map(self, file_object):
         """
