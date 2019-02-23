@@ -127,10 +127,19 @@ class IonexV1:
             setattr(self, self.header_label[label], line)
 
     @staticmethod
-    def _parse_epoch(epoch_str):
+    def _coerce_into_int(value):
+        try:
+            result = int(value)
+        except ValueError:
+            result = int(float(value))
+            warnings.warn('Coerced into integer: {}'.format(value))
+        return result
+
+    def _parse_epoch(self, epoch_str):
         epoch_elements = []
         for i in range(0, 36, 6):
-            v = int(epoch_str[i:i + 6])
+            # XXX: не все соблюдают формат, иногда попадаются float
+            v = self._coerce_into_int(epoch_str[i:i + 6])
             epoch_elements.append(v)
         epoch = datetime(*epoch_elements[0:4])
 

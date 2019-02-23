@@ -53,10 +53,16 @@ def test_gird_not_match_data(tec, lon, lat):
         )
 
 
-@mark.parametrize('none_value,exponent,in_tec,out_tec', [
-    (None, 0, [1, 2, 3, 4, 9999, 6, 7, 8, 9], [1, 2, 3, 4, 9999, 6, 7, 8, 9]),
-    (9999, 0, [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]),
-    (9999, 0, [1, 2, 3, 4, 9999, 6, 7, 8, 9], [1, 2, 3, 4, None, 6, 7, 8, 9]),
+@mark.parametrize('none_value,exponent,input_tec,expected ', [
+    (None, 0,
+     [1, 2, 3, 4, 9999, 6, 7, 8, 9],
+     [1, 2, 3, 4, 9999, 6, 7, 8, 9]),
+    (9999, 0,
+     [1, 2, 3, 4, 5, 6, 7, 8, 9],
+     [1, 2, 3, 4, 5, 6, 7, 8, 9]),
+    (9999, 0,
+     [1, 2, 3, 4, 9999, 6, 7, 8, 9],
+     [1, 2, 3, 4, None, 6, 7, 8, 9]),
     (8888, 1,
      [1, 8888, 3, 4, 5, 6, 7, 8, 9],
      [10, None, 30, 40, 50, 60, 70, 80, 90]),
@@ -64,14 +70,24 @@ def test_gird_not_match_data(tec, lon, lat):
      [1, 2, 3, 9999, 5, 6, 9999, 8, 9],
      [0.1, 0.2, 0.3, None, 0.5, 0.6, None, 0.8, 0.9]),
 ])
-def test_none_value(none_value, exponent, in_tec, out_tec):
+def test_none_value(none_value, exponent, input_tec, expected):
     inx = IonexMap(
         exponent=exponent,
         epoch=datetime.now(),
         longitude=(-1, 1, 1),
         latitude=(-1, 1, 1),
         height=300.,
-        tec=in_tec,
+        tec=input_tec,
         none_value=none_value,
     )
-    assert out_tec == approx(inx.tec, nan_ok=True)
+    # Если none_value не задано
+    if none_value is None:
+        assert expected == approx(inx.tec)
+        return
+
+    # Если задано -- должны получить None вместо none_value
+    for i in range(len(expected)):
+        if expected[i] is None:
+            assert inx.tec[i] is None
+        else:
+            assert expected[i] == approx(inx.tec[i])

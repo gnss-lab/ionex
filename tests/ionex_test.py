@@ -53,6 +53,21 @@ def grid_def(lat_def, lon_def, hgt_def):
     return Grid(lat_def, lon_def, hgt_def)
 
 
+@pytest.mark.parametrize('value, expected', [
+    ('0', 0),
+    ('1.0', 1),
+    ('12.2', 12),
+])
+def test_coerce_to_int(value, expected):
+    assert expected == IonexV1._coerce_into_int(value)
+
+
+def test_coerce_to_int_error(ionex_file):
+    inx = IonexV1(ionex_file)
+    with pytest.raises(ValueError):
+        inx._coerce_into_int('hello')
+
+
 @pytest.mark.parametrize('epoch_str,dt', [
     ('''\
   1999     1     2     1     0     0                        EPOCH OF CURRENT MAP
@@ -72,9 +87,14 @@ def grid_def(lat_def, lon_def, hgt_def):
     ('''\
   1996     3     9    20    61    73                        EPOCH OF CURRENT MAP
 ''', datetime(1996, 3, 9, 21, 2, 13)),
+    # XXX: не все соблюдают формат
+    ('''\
+  2012     3     8     6     0  0.00                        EPOCH OF CURRENT MAP
+''', datetime(2012, 3, 8, 6, 0, 0)),
 ])
-def test_parse_epoch(epoch_str, dt):
-    assert dt == IonexV1._parse_epoch(epoch_str)
+def test_parse_epoch(epoch_str, dt, ionex_file):
+    inx = IonexV1(ionex_file)
+    assert dt == inx._parse_epoch(epoch_str)
 
 
 @pytest.mark.parametrize('grid_def_str,result', [
