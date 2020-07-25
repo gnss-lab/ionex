@@ -1,4 +1,4 @@
-ionex v0.2-dev
+ionex v0.2
 ==========
 
 Bug fixes
