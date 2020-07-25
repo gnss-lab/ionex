@@ -91,6 +91,9 @@ def test_coerce_to_int_error(ionex_file):
     ('''\
   2012     3     8     6     0  0.00                        EPOCH OF CURRENT MAP
 ''', datetime(2012, 3, 8, 6, 0, 0)),
+    ('''\
+  1997     4    16    24     0     0                        EPOCH OF CURRENT MAP
+    ''', datetime(1997, 4, 17, 0, 0, 0)),
 ])
 def test_parse_epoch(epoch_str, dt, ionex_file):
     inx = IonexV1(ionex_file)

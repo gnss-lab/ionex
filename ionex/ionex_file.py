@@ -141,10 +141,13 @@ class IonexV1:
             # XXX: не все соблюдают формат, иногда попадаются float
             v = self._coerce_into_int(epoch_str[i:i + 6])
             epoch_elements.append(v)
-        epoch = datetime(*epoch_elements[0:4])
+        epoch = datetime(*epoch_elements[0:3])
 
-        # иногда минуты/секунды == 60, просто прибавляем как дельту
+        # иногда значение часа = 24 или минуты/секунды = 60
+        # прибавляем как дельту
+        epoch += timedelta(hours=epoch_elements[3])
         epoch += timedelta(seconds=epoch_elements[4] * 60 + epoch_elements[5])
+
         return epoch
 
     @staticmethod
